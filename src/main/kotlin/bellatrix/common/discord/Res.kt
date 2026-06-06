@@ -1,4 +1,4 @@
-package bellatrix.utils
+package bellatrix.common.discord
 
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder

@@ -1,9 +1,9 @@
 package bellatrix.extensions.embed
 
+import bellatrix.common.discord.CustomEmoji
+import bellatrix.common.discord.Emojis
+import bellatrix.common.discord.Res
 import bellatrix.i18n.Translations
-import bellatrix.utils.CustomEmoji
-import bellatrix.utils.Emojis
-import bellatrix.utils.Res
 import dev.kord.common.Color
 import dev.kord.common.entity.ButtonStyle
 import dev.kord.core.behavior.MessageBehavior

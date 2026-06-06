@@ -1,5 +1,6 @@
-package bellatrix.utils
+package bellatrix.common.discord
 
+import bellatrix.common.Constants
 import dev.kord.common.entity.DiscordPartialEmoji
 import dev.kord.common.entity.Snowflake
 

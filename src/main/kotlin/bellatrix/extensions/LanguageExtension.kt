@@ -1,9 +1,9 @@
 package bellatrix.extensions
 
+import bellatrix.common.discord.Res
 import bellatrix.database.repositories.UserRepository
 import bellatrix.i18n.Translations
 import bellatrix.i18n.UserLocales
-import bellatrix.utils.Res
 import dev.kordex.core.checks.anyGuild
 import dev.kordex.core.commands.Arguments
 import dev.kordex.core.commands.application.slash.converters.impl.stringChoice

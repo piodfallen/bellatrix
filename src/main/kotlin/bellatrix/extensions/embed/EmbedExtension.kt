@@ -1,7 +1,7 @@
 package bellatrix.extensions.embed
 
+import bellatrix.common.discord.Res
 import bellatrix.i18n.Translations
-import bellatrix.utils.Res
 import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Permissions
 import dev.kordex.core.checks.anyGuild
