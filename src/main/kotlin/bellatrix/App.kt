@@ -1,0 +1,55 @@
+package bellatrix
+
+import bellatrix.database.DatabaseFactory
+import bellatrix.extensions.commands.LanguageExtension
+import bellatrix.extensions.commands.PingExtension
+import bellatrix.extensions.commands.embed.EmbedExtension
+import bellatrix.extensions.events.WelcomeExtension
+import bellatrix.i18n.UserLocaleResolver
+import bellatrix.i18n.UserLocales
+import dev.kordex.core.ExtensibleBot
+import dev.kordex.core.utils.env
+import java.io.File
+import dev.kord.common.Locale as DiscordLocale
+
+private val TOKEN = env("TOKEN")
+
+suspend fun main() {
+	DatabaseFactory.init()
+
+	val bot = ExtensibleBot(TOKEN) {
+		chatCommands {
+			defaultPrefix = "?"
+			enabled = true
+		}
+
+		i18n {
+			defaultLocale = UserLocales.default
+			applicationCommandLocale(DiscordLocale.ENGLISH_UNITED_STATES)
+			localeResolver { _, _, user, _ ->
+				UserLocaleResolver.resolve(user)
+			}
+		}
+
+		extensions {
+			help {
+				enableBundledExtension = false
+			}
+
+			add(::LanguageExtension)
+			add(::EmbedExtension)
+			add(::PingExtension)
+			add(::WelcomeExtension)
+		}
+
+		if (devMode) {
+			plugins {
+				if (File("src/main/dist/plugins").isDirectory) {
+					pluginPath("src/main/dist/plugins")
+				}
+			}
+		}
+	}
+
+	bot.start()
+}

@@ -1,0 +1,42 @@
+package bellatrix.extensions.events
+
+import bellatrix.i18n.Translations
+import bellatrix.utils.Constants
+import dev.kord.core.behavior.channel.MessageChannelBehavior
+import dev.kord.core.behavior.channel.createMessage
+import dev.kord.core.event.guild.MemberJoinEvent
+import dev.kordex.core.extensions.Extension
+import dev.kordex.core.extensions.event
+import dev.kordex.core.i18n.withContext
+
+class WelcomeExtension : Extension() {
+	override val name = "welcome"
+
+	private val welcomeChannelId = Constants.welcomeChannelId
+
+	override suspend fun setup() {
+		val channelId = welcomeChannelId ?: return
+
+		event<MemberJoinEvent> {
+			action {
+				val member = event.member
+
+				if (member.isBot) return@action
+
+				val guild = event.getGuildOrNull() ?: return@action
+				val channel = guild.getChannelOrNull(channelId) as? MessageChannelBehavior ?: return@action
+
+				val translation = Translations.Events.Welcome.message
+					.withContext(this@action)
+					.translateNamed(
+						"member" to member.mention,
+						"server" to guild.name,
+					)
+
+				channel.createMessage {
+					content = translation
+				}
+			}
+		}
+	}
+}

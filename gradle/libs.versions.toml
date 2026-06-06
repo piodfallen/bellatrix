@@ -1,0 +1,40 @@
+[versions]
+detekt = "1.23.8"
+kotlin = "2.2.20"
+ksp = "2.2.20-2.0.3"
+
+groovy = "3.0.23"
+jansi = "2.4.1"
+kx-ser = "1.9.0"
+logback = "1.5.18"
+logback-groovy = "1.14.5"
+logging = "7.0.13"
+kordex-i18n = "1.1.1"
+kordex-gradle = "1.9.2"
+kordex = "2.4.1-SNAPSHOT"
+exposed = "1.3.0"
+postgresql = "42.7.4"
+
+[libraries]
+detekt = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
+groovy = { module = "org.codehaus.groovy:groovy", version.ref = "groovy" }
+jansi = { module = "org.fusesource.jansi:jansi", version.ref = "jansi" }
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8" }
+kx-ser = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kx-ser" }
+logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+logback-groovy = { module = "io.github.virtualdogbert:logback-groovy-config", version.ref = "logback-groovy" }
+logging = { module = "io.github.oshai:kotlin-logging", version.ref = "logging" }
+exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed" }
+exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
+postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
+
+[plugins]
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+
+kordex-docker = { id = "dev.kordex.gradle.docker", version.ref = "kordex-gradle" }
+kordex-i18n = { id = "dev.kordex.gradle.i18n", version.ref = "kordex-i18n" }
+kordex-plugin = { id = "dev.kordex.gradle.kordex", version.ref = "kordex-gradle" }
+ksp-plugin = { id = "com.google.devtools.ksp", version.ref = "ksp" }
