@@ -1,6 +1,7 @@
 import dev.kordex.gradle.plugins.kordex.DataCollection
 
 plugins {
+	application
 	distribution
 
 	alias(libs.plugins.kotlin.jvm)
@@ -15,6 +16,10 @@ plugins {
 
 group = "bellatrix"
 version = "1.0-SNAPSHOT"
+
+application {
+	mainClass = "bellatrix.AppKt"
+}
 
 dependencies {
 	detektPlugins(libs.detekt)

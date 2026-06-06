@@ -1,17 +1,7 @@
 services:
-  bot:
-    build: .
-    container_name: bellatrix
-    restart: unless-stopped
-    env_file:
-      - .env
-    depends_on:
-      postgres:
-        condition: service_healthy
-
   postgres:
     image: postgres:17-alpine
-    container_name: bellatrix-postgres
+    container_name: bellatrix-postgres-dev
     restart: unless-stopped
     environment:
       POSTGRES_DB: bellatrix
@@ -20,7 +10,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - postgres-dev-data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER:-postgres} -d bellatrix"]
       interval: 10s
@@ -28,4 +18,4 @@ services:
       retries: 5
 
 volumes:
-  postgres-data:
+  postgres-dev-data:

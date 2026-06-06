@@ -12,7 +12,6 @@ WORKDIR /app
 
 RUN mkdir -p /app
 
-COPY .env /app/.env
 COPY --from=build /app/build/install/bellatrix /app/bellatrix
 
 ENTRYPOINT ["/app/bellatrix/bin/bellatrix"]
