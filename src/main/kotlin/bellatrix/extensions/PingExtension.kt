@@ -1,7 +1,7 @@
 package bellatrix.extensions
 
+import bellatrix.common.discord.Res
 import bellatrix.i18n.Translations
-import bellatrix.utils.Res
 import dev.kord.core.Kord
 import dev.kordex.core.checks.anyGuild
 import dev.kordex.core.extensions.Extension

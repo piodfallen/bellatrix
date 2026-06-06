@@ -1,7 +1,7 @@
 package bellatrix.extensions
 
+import bellatrix.common.discord.Channels
 import bellatrix.i18n.Translations
-import bellatrix.utils.Constants
 import dev.kord.core.behavior.channel.MessageChannelBehavior
 import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.event.guild.MemberJoinEvent
@@ -12,10 +12,8 @@ import dev.kordex.core.i18n.withContext
 class WelcomeExtension : Extension() {
 	override val name = "welcome"
 
-	private val welcomeChannelId = Constants.welcomeChannelId
-
 	override suspend fun setup() {
-		val channelId = welcomeChannelId ?: return
+		val channelId = Channels.welcome ?: return
 
 		event<MemberJoinEvent> {
 			action {

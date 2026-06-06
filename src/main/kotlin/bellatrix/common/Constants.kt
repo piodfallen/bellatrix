@@ -1,4 +1,4 @@
-package bellatrix.utils
+package bellatrix.common
 
 import dev.kord.common.entity.Snowflake
 import java.util.Properties
@@ -13,13 +13,10 @@ object Constants {
 		}
 	}
 
-	val welcomeChannelId: Snowflake?
-		get() = optionalSnowflake("channels.global")
-
-	internal fun optionalSnowflake(key: String): Snowflake? =
+	fun optionalSnowflake(key: String): Snowflake? =
 		optionalString(key)?.let(::Snowflake)
 
-	internal fun optionalString(key: String): String? =
+	fun optionalString(key: String): String? =
 		properties.getProperty(key)
 			?.trim()
 			?.takeIf { it.isNotBlank() }
