@@ -2,7 +2,7 @@ package bellatrix.i18n
 
 import java.util.Locale
 
-object UserLocales {
+object SupportedLocales {
 	const val DEFAULT_TAG = "pt-BR"
 	const val ENGLISH_TAG = "en-US"
 

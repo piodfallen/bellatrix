@@ -13,7 +13,7 @@ class WelcomeExtension : Extension() {
 	override val name = "welcome"
 
 	override suspend fun setup() {
-		val channelId = Channels.welcome ?: return
+		val channelId = Channels.global ?: return
 
 		event<MemberJoinEvent> {
 			action {
@@ -24,7 +24,7 @@ class WelcomeExtension : Extension() {
 				val guild = event.getGuildOrNull() ?: return@action
 				val channel = guild.getChannelOrNull(channelId) as? MessageChannelBehavior ?: return@action
 
-				val translation = Translations.Events.Welcome.message
+				val response = Translations.Events.Welcome.message
 					.withContext(this@action)
 					.translateNamed(
 						"member" to member.mention,
@@ -32,7 +32,7 @@ class WelcomeExtension : Extension() {
 					)
 
 				channel.createMessage {
-					content = translation
+					content = response
 				}
 			}
 		}

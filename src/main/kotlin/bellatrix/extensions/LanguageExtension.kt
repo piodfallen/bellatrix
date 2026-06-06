@@ -2,8 +2,8 @@ package bellatrix.extensions
 
 import bellatrix.common.discord.Res
 import bellatrix.database.repositories.UserRepository
+import bellatrix.i18n.SupportedLocales
 import bellatrix.i18n.Translations
-import bellatrix.i18n.UserLocales
 import dev.kordex.core.checks.anyGuild
 import dev.kordex.core.commands.Arguments
 import dev.kordex.core.commands.application.slash.converters.impl.stringChoice
@@ -31,9 +31,9 @@ class LanguageExtension : Extension() {
 					locale = arguments.locale,
 				)
 
-				resolvedLocale = UserLocales.fromTag(storedUser.locale)
+				resolvedLocale = SupportedLocales.fromTag(storedUser.locale)
 
-				val localeNameKey = if (storedUser.locale == UserLocales.ENGLISH_TAG) {
+				val localeNameKey = if (storedUser.locale == SupportedLocales.ENGLISH_TAG) {
 					Translations.Commands.Language.Choice.english
 				} else {
 					Translations.Commands.Language.Choice.portugueseBrazil
@@ -54,8 +54,8 @@ class LanguageExtension : Extension() {
 			name = Translations.Commands.Language.Arguments.Locale.name
 			description = Translations.Commands.Language.Arguments.Locale.description
 
-			choice(Translations.Commands.Language.Choice.portugueseBrazil, UserLocales.DEFAULT_TAG)
-			choice(Translations.Commands.Language.Choice.english, UserLocales.ENGLISH_TAG)
+			choice(Translations.Commands.Language.Choice.portugueseBrazil, SupportedLocales.DEFAULT_TAG)
+			choice(Translations.Commands.Language.Choice.english, SupportedLocales.ENGLISH_TAG)
 		}
 	}
 }
