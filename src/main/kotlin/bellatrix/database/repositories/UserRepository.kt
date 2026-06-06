@@ -1,7 +1,8 @@
 package bellatrix.database.repositories
 
+import bellatrix.database.models.User
 import bellatrix.database.tables.Users
-import bellatrix.i18n.UserLocales
+import bellatrix.i18n.SupportedLocales
 import dev.kord.common.entity.Snowflake
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.insertIgnore
@@ -14,7 +15,7 @@ object UserRepository {
 		transaction {
 			Users.insertIgnore {
 				it[Users.userId] = userId.toString()
-				it[locale] = UserLocales.DEFAULT_TAG
+				it[locale] = SupportedLocales.DEFAULT_TAG
 			}
 
 			Users
@@ -30,14 +31,14 @@ object UserRepository {
 		}
 
 	fun updateLocale(userId: Snowflake, locale: String): User {
-		val normalizedLocale = requireNotNull(UserLocales.normalize(locale)) {
+		val normalizedLocale = requireNotNull(SupportedLocales.normalize(locale)) {
 			"Unsupported locale: $locale"
 		}
 
 		return transaction {
 			Users.insertIgnore {
 				it[Users.userId] = userId.toString()
-				it[Users.locale] = UserLocales.DEFAULT_TAG
+				it[Users.locale] = SupportedLocales.DEFAULT_TAG
 			}
 
 			Users.update({ Users.userId eq userId.toString() }) {

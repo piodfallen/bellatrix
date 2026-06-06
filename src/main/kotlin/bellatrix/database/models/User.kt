@@ -1,4 +1,4 @@
-package bellatrix.database.repositories
+package bellatrix.database.models
 
 data class User(
 	val userId: String,

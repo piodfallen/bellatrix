@@ -10,5 +10,5 @@ object UserLocaleResolver {
 			?.id
 			?.let(UserRepository::getOrCreate)
 			?.locale
-			?.let(UserLocales::fromTag)
+			?.let(SupportedLocales::fromTag)
 }

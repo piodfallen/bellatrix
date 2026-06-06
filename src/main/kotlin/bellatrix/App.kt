@@ -5,8 +5,8 @@ import bellatrix.extensions.LanguageExtension
 import bellatrix.extensions.PingExtension
 import bellatrix.extensions.WelcomeExtension
 import bellatrix.extensions.embed.EmbedExtension
+import bellatrix.i18n.SupportedLocales
 import bellatrix.i18n.UserLocaleResolver
-import bellatrix.i18n.UserLocales
 import dev.kordex.core.ExtensibleBot
 import dev.kordex.core.utils.env
 import java.io.File
@@ -24,7 +24,7 @@ suspend fun main() {
 		}
 
 		i18n {
-			defaultLocale = UserLocales.default
+			defaultLocale = SupportedLocales.default
 			applicationCommandLocale(DiscordLocale.ENGLISH_UNITED_STATES)
 			localeResolver { _, _, user, _ ->
 				UserLocaleResolver.resolve(user)
