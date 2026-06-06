@@ -13,7 +13,7 @@ class WelcomeExtension : Extension() {
 	override val name = "welcome"
 
 	override suspend fun setup() {
-		val channelId = Channels.welcome ?: return
+		val channelId = Channels.global ?: return
 
 		event<MemberJoinEvent> {
 			action {
