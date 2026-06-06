@@ -1,10 +1,10 @@
 package bellatrix
 
 import bellatrix.database.DatabaseFactory
-import bellatrix.extensions.commands.LanguageExtension
-import bellatrix.extensions.commands.PingExtension
-import bellatrix.extensions.commands.embed.EmbedExtension
-import bellatrix.extensions.events.WelcomeExtension
+import bellatrix.extensions.LanguageExtension
+import bellatrix.extensions.PingExtension
+import bellatrix.extensions.WelcomeExtension
+import bellatrix.extensions.embed.EmbedExtension
 import bellatrix.i18n.UserLocaleResolver
 import bellatrix.i18n.UserLocales
 import dev.kordex.core.ExtensibleBot

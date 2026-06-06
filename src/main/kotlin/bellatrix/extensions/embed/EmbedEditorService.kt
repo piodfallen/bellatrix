@@ -1,4 +1,4 @@
-package bellatrix.extensions.commands.embed
+package bellatrix.extensions.embed
 
 import bellatrix.i18n.Translations
 import bellatrix.utils.CustomEmoji

@@ -1,4 +1,4 @@
-package bellatrix.extensions.commands
+package bellatrix.extensions
 
 import bellatrix.database.repositories.UserRepository
 import bellatrix.i18n.Translations
