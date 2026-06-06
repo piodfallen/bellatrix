@@ -1,4 +1,4 @@
-package bellatrix.extensions.events
+package bellatrix.extensions
 
 import bellatrix.i18n.Translations
 import bellatrix.utils.Constants
