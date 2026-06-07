@@ -2,9 +2,12 @@ package bellatrix.extensions.modmail
 
 import bellatrix.common.discord.Channels
 import bellatrix.common.discord.Colors
-import bellatrix.common.discord.CustomEmoji
 import bellatrix.common.discord.Emojis
 import bellatrix.common.discord.Roles
+import bellatrix.common.extensions.prefix
+import bellatrix.common.extensions.roleMention
+import bellatrix.common.extensions.strikethrough
+import bellatrix.common.extensions.userMention
 import bellatrix.database.models.ModmailMessageSender
 import bellatrix.database.models.ModmailThread
 import bellatrix.database.repositories.ModmailThreadRepository
@@ -122,9 +125,8 @@ class ModmailService(
 		)
 
 		thread.createMessage {
-			content = withEmoji(
-				emoji = Emojis.info,
-				message = Translations.Modmail.Thread.opened
+			content = Emojis.info.prefix(
+				Translations.Modmail.Thread.opened
 					.withNamedPlaceholders(
 						"role" to Roles.moderatorMention(),
 						"user" to user.mention,
@@ -182,9 +184,8 @@ class ModmailService(
 			val locale = GuildLocaleResolver.resolve(thread.getGuildOrNull())
 
 			thread.createMessage(
-				withEmoji(
-					emoji = Emojis.check,
-					message = Translations.Modmail.Thread.assigned
+				Emojis.check.prefix(
+					Translations.Modmail.Thread.assigned
 						.withNamedPlaceholders("staff" to staff.mention)
 						.withLocale(locale)
 						.translate(),
@@ -208,10 +209,7 @@ class ModmailService(
 		}.withLocale(locale).translate()
 
 		thread.createMessage(
-			withEmoji(
-				emoji = if (automatic) Emojis.warning else Emojis.check,
-				message = message,
-			),
+			(if (automatic) Emojis.warning else Emojis.check).prefix(message),
 		)
 		markParentMessageClosed(kord, modmailThread, locale)
 
@@ -221,9 +219,8 @@ class ModmailService(
 
 			user.getDmChannelOrNull()?.createMessage {
 				embed {
-					description = withEmoji(
-						emoji = Emojis.lock,
-						message = Translations.Modmail.User.closed
+					description = Emojis.lock.prefix(
+						Translations.Modmail.User.closed
 							.withLocale(userLocale)
 							.translate(),
 					)
@@ -247,11 +244,11 @@ class ModmailService(
 
 		dm.createMessage {
 			embed {
-				description = Emojis.hashtag
-					?.let {
-						"$it ${Translations.Modmail.User.opened.withLocale(locale).translate()}"
-					}
-					?: Translations.Modmail.User.opened.withLocale(locale).translate()
+				description = Emojis.hashtag.prefix(
+					Translations.Modmail.User.opened
+						.withLocale(locale)
+						.translate(),
+				)
 				color = Colors.success
 			}
 		}
@@ -301,9 +298,8 @@ class ModmailService(
 		user: User,
 		locale: Locale,
 	): String =
-		withEmoji(
-			emoji = Emojis.hashtag,
-			message = parentMessageContent(
+		Emojis.hashtag.prefix(
+			parentMessageContent(
 				userMention = user.mention,
 				userId = user.id,
 				key = Translations.Modmail.Thread.parentOpen,
@@ -315,17 +311,14 @@ class ModmailService(
 		userId: Snowflake,
 		locale: Locale,
 	): String =
-		"~~${
-			withEmoji(
-				emoji = Emojis.check,
-				message = parentMessageContent(
-					userMention = "<@$userId>",
-					userId = userId,
-					key = Translations.Modmail.Thread.parentClosed,
-					locale = locale,
-				),
-			)
-		}~~"
+		Emojis.check.prefix(
+			parentMessageContent(
+				userMention = userId.userMention,
+				userId = userId,
+				key = Translations.Modmail.Thread.parentClosed,
+				locale = locale,
+			),
+		).strikethrough
 
 	private fun parentMessageContent(
 		userMention: String,
@@ -341,17 +334,9 @@ class ModmailService(
 			.withLocale(locale)
 			.translate()
 
-	private fun withEmoji(
-		emoji: CustomEmoji?,
-		message: String,
-	): String =
-		emoji
-			?.let { "$it $message" }
-			?: message
-
 	private fun Roles.moderatorMention(): String =
 		moderator
-			?.let { "<@&$it>" }
+			?.roleMention
 			?: "@here"
 
 	private suspend fun markParentMessageClosed(

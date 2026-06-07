@@ -3,6 +3,7 @@ package bellatrix.extensions.embed
 import bellatrix.common.discord.CustomEmoji
 import bellatrix.common.discord.Emojis
 import bellatrix.common.discord.Res
+import bellatrix.common.extensions.prefix
 import bellatrix.i18n.Translations
 import dev.kord.common.Color
 import dev.kord.common.entity.ButtonStyle
@@ -338,17 +339,12 @@ class EmbedEditorService {
 	}
 
 	private fun EmbedEditorState.statusText(locale: Locale): String =
-		withStatusEmoji(
+		Emojis.hashtag.prefix(
 			Translations.Embed.Editor.Status.current.withNamedPlaceholders(
 				"current" to currentEmbedIndex + 1,
 				"total" to embeds.size,
 			).withLocale(locale).translate(),
 		)
-
-	private fun withStatusEmoji(text: String): String =
-		Emojis.hashtag
-			?.let { "$it $text" }
-			?: text
 
 	private fun EmbedEditorState.submitButtonLabel(): Key =
 		when (target) {

@@ -1,6 +1,7 @@
 package bellatrix.extensions
 
 import bellatrix.common.discord.Res
+import bellatrix.common.extensions.bold
 import bellatrix.i18n.Translations
 import dev.kord.core.Kord
 import dev.kordex.core.checks.anyGuild
@@ -59,6 +60,6 @@ class PingExtension : Extension() {
 		kord.gateway.averagePing
 			?.inWholeMilliseconds
 			?.coerceAtLeast(0)
-			?.let { "**$it** ms" }
+			?.let { "${it.toString().bold} ms" }
 			?: "N/A"
 }
