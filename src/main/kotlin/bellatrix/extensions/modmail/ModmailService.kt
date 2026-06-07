@@ -9,7 +9,6 @@ import bellatrix.database.models.ModmailMessageSender
 import bellatrix.database.models.ModmailThread
 import bellatrix.database.repositories.ModmailThreadRepository
 import bellatrix.i18n.GuildLocaleResolver
-import bellatrix.i18n.SupportedLocales
 import bellatrix.i18n.Translations
 import bellatrix.i18n.UserLocaleResolver
 import dev.kord.common.entity.ArchiveDuration
@@ -135,7 +134,7 @@ class ModmailService(
 			)
 		}
 
-		sendOpenedDm(user)
+		sendOpenedDm(user, locale)
 
 		return modmailThread
 	}
@@ -218,14 +217,14 @@ class ModmailService(
 
 		if (notifyUser) {
 			val user = UserBehavior(modmailThread.userId, kord)
-			val locale = UserLocaleResolver.resolve(user) ?: SupportedLocales.default
+			val userLocale = UserLocaleResolver.resolve(user, locale)
 
 			user.getDmChannelOrNull()?.createMessage {
 				embed {
 					description = withEmoji(
 						emoji = Emojis.lock,
 						message = Translations.Modmail.User.closed
-							.withLocale(locale)
+							.withLocale(userLocale)
 							.translate(),
 					)
 					color = Colors.success
@@ -239,8 +238,11 @@ class ModmailService(
 		}
 	}
 
-	private suspend fun sendOpenedDm(user: User) {
-		val locale = UserLocaleResolver.resolve(user) ?: SupportedLocales.default
+	private suspend fun sendOpenedDm(
+		user: User,
+		guildLocale: Locale,
+	) {
+		val locale = UserLocaleResolver.resolve(user, guildLocale)
 		val dm = user.getDmChannelOrNull() ?: return
 
 		dm.createMessage {

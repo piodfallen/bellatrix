@@ -31,7 +31,7 @@ class LanguageExtension : Extension() {
 					locale = arguments.locale,
 				)
 
-				resolvedLocale = SupportedLocales.fromTag(storedUser.locale)
+				resolvedLocale = requireNotNull(SupportedLocales.fromTag(storedUser.locale))
 
 				val localeNameKey = if (storedUser.locale == SupportedLocales.ENGLISH_TAG) {
 					Translations.Commands.Language.Choice.english
@@ -54,7 +54,7 @@ class LanguageExtension : Extension() {
 			name = Translations.Commands.Language.Arguments.Locale.name
 			description = Translations.Commands.Language.Arguments.Locale.description
 
-			choice(Translations.Commands.Language.Choice.portugueseBrazil, SupportedLocales.DEFAULT_TAG)
+			choice(Translations.Commands.Language.Choice.portugueseBrazil, SupportedLocales.PORTUGUESE_BRAZIL_TAG)
 			choice(Translations.Commands.Language.Choice.english, SupportedLocales.ENGLISH_TAG)
 		}
 	}

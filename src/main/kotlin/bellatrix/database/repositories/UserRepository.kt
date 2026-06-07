@@ -15,7 +15,6 @@ object UserRepository {
 		transaction {
 			Users.insertIgnore {
 				it[Users.userId] = userId.toString()
-				it[locale] = SupportedLocales.DEFAULT_TAG
 			}
 
 			Users
@@ -38,7 +37,6 @@ object UserRepository {
 		return transaction {
 			Users.insertIgnore {
 				it[Users.userId] = userId.toString()
-				it[Users.locale] = SupportedLocales.DEFAULT_TAG
 			}
 
 			Users.update({ Users.userId eq userId.toString() }) {

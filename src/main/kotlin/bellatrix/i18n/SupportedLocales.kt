@@ -3,18 +3,19 @@ package bellatrix.i18n
 import java.util.Locale
 
 object SupportedLocales {
-	const val DEFAULT_TAG = "pt-BR"
+	const val PORTUGUESE_BRAZIL_TAG = "pt-BR"
 	const val ENGLISH_TAG = "en-US"
 
-	val default: Locale = Locale.forLanguageTag(DEFAULT_TAG)
+	val PORTUGUESE_BRAZIL: Locale = Locale.forLanguageTag(PORTUGUESE_BRAZIL_TAG)
 
-	val supportedTags: Set<String> = setOf(DEFAULT_TAG, ENGLISH_TAG)
+	val supportedTags: Set<String> = setOf(PORTUGUESE_BRAZIL_TAG, ENGLISH_TAG)
 
-	fun normalize(tag: String): String? =
-		Locale.forLanguageTag(tag)
-			.toLanguageTag()
-			.takeIf { it in supportedTags }
+	fun normalize(tag: String?): String? =
+		tag
+			?.let(Locale::forLanguageTag)
+			?.toLanguageTag()
+			?.takeIf { it in supportedTags }
 
-	fun fromTag(tag: String): Locale =
-		Locale.forLanguageTag(normalize(tag) ?: DEFAULT_TAG)
+	fun fromTag(tag: String?): Locale? =
+		normalize(tag)?.let(Locale::forLanguageTag)
 }
