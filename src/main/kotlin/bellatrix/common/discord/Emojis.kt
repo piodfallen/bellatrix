@@ -56,6 +56,9 @@ object Emojis {
 	val text: CustomEmoji?
 		get() = customEmoji("text")
 
+	val lock: CustomEmoji?
+		get() = customEmoji("lock")
+
 	private fun customEmoji(name: String): CustomEmoji? =
 		Constants.optionalSnowflake("emojis.$name")
 			?.let { id -> CustomEmoji(name, id) }
