@@ -1,5 +1,6 @@
 package bellatrix.common.discord
 
+import bellatrix.common.extensions.prefix
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import dev.kord.rest.builder.message.MessageBuilder
@@ -27,9 +28,7 @@ object Res {
 		color: Color,
 	): ResponseEmbed =
 		ResponseEmbed(
-			description = emoji
-				?.let { "$it $message" }
-				?: message,
+			description = emoji.prefix(message),
 			color = color,
 		)
 }
