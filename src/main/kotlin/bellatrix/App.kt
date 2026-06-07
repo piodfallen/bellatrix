@@ -2,6 +2,7 @@ package bellatrix
 
 import bellatrix.database.DatabaseFactory
 import bellatrix.extensions.LanguageExtension
+import bellatrix.extensions.MousetrapExtension
 import bellatrix.extensions.PingExtension
 import bellatrix.extensions.WelcomeExtension
 import bellatrix.extensions.embed.EmbedExtension
@@ -40,6 +41,7 @@ suspend fun main() {
 			add(::LanguageExtension)
 			add(::EmbedExtension)
 			add(::ModmailExtension)
+			add(::MousetrapExtension)
 			add(::PingExtension)
 			add(::WelcomeExtension)
 		}

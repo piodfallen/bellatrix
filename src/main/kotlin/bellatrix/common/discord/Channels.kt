@@ -9,4 +9,7 @@ object Channels {
 
 	val modmail: Snowflake?
 		get() = Constants.optionalSnowflake("channels.modmail")
+
+	val mousetrap: Snowflake?
+		get() = Constants.optionalSnowflake("channels.mousetrap")
 }
