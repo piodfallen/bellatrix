@@ -25,10 +25,10 @@ suspend fun main() {
 		}
 
 		i18n {
-			defaultLocale = SupportedLocales.default
+			defaultLocale = SupportedLocales.PORTUGUESE_BRAZIL
 			applicationCommandLocale(DiscordLocale.ENGLISH_UNITED_STATES)
-			localeResolver { _, _, user, _ ->
-				UserLocaleResolver.resolve(user)
+			localeResolver { guild, _, user, _ ->
+				UserLocaleResolver.resolve(user, guild)
 			}
 		}
 
