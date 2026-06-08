@@ -2,7 +2,7 @@ package bellatrix.extensions.starboard
 
 import bellatrix.common.discord.Channels
 import bellatrix.common.discord.Colors
-import bellatrix.common.discord.StarboardConfig
+import bellatrix.common.discord.DiscordSettings
 import bellatrix.database.models.StarboardEntry
 import bellatrix.database.repositories.StarboardEntryRepository
 import bellatrix.i18n.GuildLocaleResolver
@@ -60,7 +60,7 @@ class StarboardService(
 			val starCount = message.getReactors(STAR_EMOJI).count { !it.isBot }
 			val entry = repository.findByOriginalMessageId(messageId)
 
-			if (starCount < StarboardConfig.minimumStars) {
+			if (starCount < DiscordSettings.starboardMinimumStars) {
 				if (entry != null) removeEntryUnlocked(kord, messageId, entry)
 				return@withLock
 			}
@@ -98,7 +98,7 @@ class StarboardService(
 
 			val starCount = message.getReactors(STAR_EMOJI).count { !it.isBot }
 
-			if (starCount < StarboardConfig.minimumStars) {
+			if (starCount < DiscordSettings.starboardMinimumStars) {
 				removeEntryUnlocked(kord, originalMessageId, entry)
 			} else {
 				updateEntry(kord, message, entry, starCount)
