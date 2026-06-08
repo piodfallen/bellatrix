@@ -16,6 +16,9 @@ object Constants {
 	fun optionalSnowflake(key: String): Snowflake? =
 		optionalString(key)?.let(::Snowflake)
 
+	fun optionalInt(key: String): Int? =
+		optionalString(key)?.toIntOrNull()
+
 	fun optionalString(key: String): String? =
 		properties.getProperty(key)
 			?.trim()
