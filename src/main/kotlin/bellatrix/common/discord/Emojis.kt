@@ -59,6 +59,30 @@ object Emojis {
 	val lock: CustomEmoji?
 		get() = customEmoji("lock")
 
+	val unlock: CustomEmoji?
+		get() = customEmoji("unlock")
+
+	val user: CustomEmoji?
+		get() = customEmoji("user")
+
+	val userCheck: CustomEmoji?
+		get() = customEmoji("user-check")
+
+	val calendar: CustomEmoji?
+		get() = customEmoji("calendar")
+
+	val starYellow: CustomEmoji?
+		get() = customEmoji("star-yellow")
+
+	val starRed: CustomEmoji?
+		get() = customEmoji("star-red")
+
+	val starGreen: CustomEmoji?
+		get() = customEmoji("star-green")
+
+	val starBlue: CustomEmoji?
+		get() = customEmoji("star-blue")
+
 	private fun customEmoji(name: String): CustomEmoji? =
 		Constants.optionalSnowflake("emojis.$name")
 			?.let { id -> CustomEmoji(name, id) }
@@ -68,15 +92,22 @@ data class CustomEmoji(
 	val name: String,
 	val id: Snowflake,
 ) {
+	private val discordName: String
+		get() = name.replace(INVALID_EMOJI_NAME_CHARACTERS, "_")
+
 	val mention: String
-		get() = "<:$name:$id>"
+		get() = "<:$discordName:$id>"
 
 	val partial: DiscordPartialEmoji
 		get() = DiscordPartialEmoji(
 			id = id,
-			name = name,
+			name = discordName,
 		)
 
 	override fun toString(): String =
 		mention
+
+	private companion object {
+		val INVALID_EMOJI_NAME_CHARACTERS = Regex("[^A-Za-z0-9_]")
+	}
 }

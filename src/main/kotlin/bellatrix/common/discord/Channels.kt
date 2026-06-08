@@ -15,4 +15,7 @@ object Channels {
 
 	val starboard: Snowflake?
 		get() = Constants.optionalSnowflake("channels.starboard")
+
+	val tasks: Snowflake?
+		get() = Constants.optionalSnowflake("channels.tasks")
 }
