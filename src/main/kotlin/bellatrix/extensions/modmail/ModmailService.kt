@@ -5,9 +5,7 @@ import bellatrix.common.discord.Colors
 import bellatrix.common.discord.Emojis
 import bellatrix.common.discord.Roles
 import bellatrix.common.extensions.prefix
-import bellatrix.common.extensions.roleMention
 import bellatrix.common.extensions.strikethrough
-import bellatrix.common.extensions.userMention
 import bellatrix.database.models.ModmailMessageSender
 import bellatrix.database.models.ModmailThread
 import bellatrix.database.repositories.ModmailThreadRepository
@@ -18,6 +16,7 @@ import dev.kord.common.entity.ArchiveDuration
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.behavior.MessageBehavior
+import dev.kord.core.behavior.RoleBehavior
 import dev.kord.core.behavior.UserBehavior
 import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.behavior.channel.threads.edit
@@ -128,7 +127,7 @@ class ModmailService(
 			content = Emojis.info.prefix(
 				Translations.Modmail.Thread.opened
 					.withNamedPlaceholders(
-						"role" to Roles.moderatorMention(),
+						"role" to Roles.moderatorMention(parent.guildId, user.kord),
 						"user" to user.mention,
 					)
 					.withLocale(locale)
@@ -308,12 +307,13 @@ class ModmailService(
 		)
 
 	private fun closedParentMessageContent(
+		kord: Kord,
 		userId: Snowflake,
 		locale: Locale,
 	): String =
 		Emojis.check.prefix(
 			parentMessageContent(
-				userMention = userId.userMention,
+				userMention = UserBehavior(userId, kord).mention,
 				userId = userId,
 				key = Translations.Modmail.Thread.parentClosed,
 				locale = locale,
@@ -334,9 +334,12 @@ class ModmailService(
 			.withLocale(locale)
 			.translate()
 
-	private fun Roles.moderatorMention(): String =
+	private fun Roles.moderatorMention(
+		guildId: Snowflake,
+		kord: Kord,
+	): String =
 		moderator
-			?.roleMention
+			?.let { RoleBehavior(guildId, it, kord).mention }
 			?: "@here"
 
 	private suspend fun markParentMessageClosed(
@@ -348,7 +351,7 @@ class ModmailService(
 		val channelId = Channels.modmail ?: return
 
 		MessageBehavior(channelId, parentMessageId, kord).edit {
-			content = closedParentMessageContent(modmailThread.userId, locale)
+			content = closedParentMessageContent(kord, modmailThread.userId, locale)
 		}
 	}
 

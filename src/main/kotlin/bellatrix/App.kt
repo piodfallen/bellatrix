@@ -7,6 +7,7 @@ import bellatrix.extensions.PingExtension
 import bellatrix.extensions.WelcomeExtension
 import bellatrix.extensions.embed.EmbedExtension
 import bellatrix.extensions.modmail.ModmailExtension
+import bellatrix.extensions.starboard.StarboardExtension
 import bellatrix.i18n.SupportedLocales
 import bellatrix.i18n.UserLocaleResolver
 import dev.kordex.core.ExtensibleBot
@@ -43,6 +44,7 @@ suspend fun main() {
 			add(::ModmailExtension)
 			add(::MousetrapExtension)
 			add(::PingExtension)
+			add(::StarboardExtension)
 			add(::WelcomeExtension)
 		}
 

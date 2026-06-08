@@ -12,4 +12,7 @@ object Channels {
 
 	val mousetrap: Snowflake?
 		get() = Constants.optionalSnowflake("channels.mousetrap")
+
+	val starboard: Snowflake?
+		get() = Constants.optionalSnowflake("channels.starboard")
 }
