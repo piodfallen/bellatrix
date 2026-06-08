@@ -4,8 +4,8 @@ import bellatrix.common.Constants
 import dev.kord.common.entity.Snowflake
 
 object Channels {
-	val global: Snowflake?
-		get() = Constants.optionalSnowflake("channels.global")
+	val welcome: Snowflake?
+		get() = Constants.optionalSnowflake("channels.welcome")
 
 	val modmail: Snowflake?
 		get() = Constants.optionalSnowflake("channels.modmail")
@@ -18,4 +18,7 @@ object Channels {
 
 	val tasks: Snowflake?
 		get() = Constants.optionalSnowflake("channels.tasks")
+
+	val disboardBump: Snowflake?
+		get() = Constants.optionalSnowflake("channels.disboard-bump")
 }

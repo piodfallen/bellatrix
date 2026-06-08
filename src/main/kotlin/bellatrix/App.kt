@@ -1,6 +1,8 @@
 package bellatrix
 
 import bellatrix.database.DatabaseFactory
+import bellatrix.extensions.AutoroleExtension
+import bellatrix.extensions.DisboardBumpExtension
 import bellatrix.extensions.LanguageExtension
 import bellatrix.extensions.MousetrapExtension
 import bellatrix.extensions.PingExtension
@@ -41,6 +43,8 @@ suspend fun main() {
 			}
 
 			add(::LanguageExtension)
+			add(::AutoroleExtension)
+			add(::DisboardBumpExtension)
 			add(::EmbedExtension)
 			add(::ModmailExtension)
 			add(::MousetrapExtension)
