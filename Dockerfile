@@ -10,7 +10,9 @@ FROM docker.io/amazoncorretto:21
 
 WORKDIR /app
 
-RUN mkdir -p /app/data
+ENV STORAGE_FILE_ROOT=/home/discloud/data
+
+RUN mkdir -p /home/discloud/data
 
 COPY --from=build /app/build/install/bellatrix /app/bellatrix
 COPY --from=build /app/.env /app/.env

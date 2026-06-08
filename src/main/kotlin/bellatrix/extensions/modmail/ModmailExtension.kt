@@ -37,6 +37,9 @@ class ModmailExtension : Extension() {
 				if (event.guildId == null) {
 					service.handleUserDm(message)
 				} else {
+					val member = event.member ?: return@action
+					if (moderatorRole !in member.roleIds) return@action
+
 					service.handleThreadMessage(message)
 				}
 			}
