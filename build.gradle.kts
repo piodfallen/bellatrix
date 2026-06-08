@@ -1,4 +1,6 @@
 import dev.kordex.gradle.plugins.kordex.DataCollection
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 plugins {
 	application
@@ -8,6 +10,7 @@ plugins {
 	alias(libs.plugins.kotlin.serialization)
 
 	alias(libs.plugins.detekt)
+	alias(libs.plugins.flyway)
 
 	alias(libs.plugins.kordex.i18n)
 	alias(libs.plugins.kordex.plugin)
@@ -28,6 +31,8 @@ dependencies {
 	implementation(libs.kx.ser)
 	implementation(libs.exposed.core)
 	implementation(libs.exposed.jdbc)
+	implementation(libs.flyway.core)
+	implementation(libs.flyway.database.postgresql)
 	implementation(libs.postgresql)
 
 	// Logging dependencies
@@ -73,4 +78,46 @@ detekt {
 	buildUponDefaultConfig = true
 
 	config.from(rootProject.files("detekt.yml"))
+}
+
+flyway {
+	locations = arrayOf("filesystem:src/main/resources/db/migration")
+}
+
+tasks.register("flywayAdd") {
+	group = "flyway"
+	description = "Creates the next Flyway SQL migration file."
+
+	doLast {
+		val migrationDirectory = layout.projectDirectory
+			.dir("src/main/resources/db/migration")
+			.asFile
+			.also(File::mkdirs)
+
+		val migrationDescription = providers
+			.gradleProperty("flyway.add.description")
+			.orNull
+			?.trim()
+			?.lowercase()
+			?.replace(Regex("[^a-z0-9]+"), "_")
+			?.trim('_')
+			?.takeIf(String::isNotBlank)
+			?: error("Missing migration description. Use -Pflyway.add.description=modmail")
+
+		val formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
+		var migrationVersion = LocalDateTime.now()
+		var migrationFile: File
+
+		do {
+			val formattedVersion = migrationVersion.format(formatter)
+			migrationFile = migrationDirectory.resolve("V${formattedVersion}__${migrationDescription}.sql")
+			migrationVersion = migrationVersion.plusSeconds(1)
+		} while (migrationFile.exists())
+
+		check(migrationFile.createNewFile()) {
+			"Migration file already exists: ${migrationFile.relativeTo(projectDir)}"
+		}
+
+		logger.lifecycle("Created ${migrationFile.relativeTo(projectDir)}")
+	}
 }
