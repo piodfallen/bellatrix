@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS users (
+    user_id VARCHAR(32) PRIMARY KEY,
+    locale VARCHAR(16)
+);
