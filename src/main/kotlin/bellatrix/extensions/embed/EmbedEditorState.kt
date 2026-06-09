@@ -6,6 +6,7 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.Embed
 import dev.kord.rest.builder.message.EmbedBuilder
 import dev.kordex.i18n.Key
+import java.net.URI
 
 class EmbedEditorState(
 	var mode: EditorMode = EditorMode.Main,
@@ -116,10 +117,10 @@ class EditableEmbed(
 	) {
 		builder.title = title
 		builder.description = description ?: previewFallback?.takeIf { !hasContent() }
-		builder.image = image
+		builder.image = image.validUrlOrNull()
 		builder.color = color
 
-		thumbnail?.let { thumbnailUrl ->
+		thumbnail.validUrlOrNull()?.let { thumbnailUrl ->
 			builder.thumbnail {
 				url = thumbnailUrl
 			}
@@ -128,7 +129,7 @@ class EditableEmbed(
 		footer?.takeIf(EditableFooter::hasContent)?.let { editableFooter ->
 			builder.footer {
 				text = editableFooter.text.orEmpty()
-				icon = editableFooter.iconUrl
+				icon = editableFooter.iconUrl.validUrlOrNull()
 			}
 		}
 
@@ -165,6 +166,20 @@ class EditableEmbed(
 			)
 	}
 }
+
+internal fun String?.validUrlOrNull(): String? =
+	this
+		?.trim()
+		?.takeIf(String::isNotBlank)
+		?.takeIf { value ->
+			runCatching {
+				val uri = URI(value)
+
+				uri.scheme in VALID_URL_SCHEMES && !uri.host.isNullOrBlank()
+			}.getOrDefault(false)
+		}
+
+private val VALID_URL_SCHEMES = setOf("http", "https")
 
 class EditableFooter(
 	var text: String? = null,

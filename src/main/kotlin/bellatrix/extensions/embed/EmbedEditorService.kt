@@ -430,13 +430,13 @@ class EmbedEditorService {
 			when (state.selectedProperty) {
 				EmbedProperty.Title -> embed.title = value.inputValue()
 				EmbedProperty.Description -> embed.description = description.inputValue()
-				EmbedProperty.Image -> embed.image = value.inputValue()
-				EmbedProperty.Thumbnail -> embed.thumbnail = value.inputValue()
+				EmbedProperty.Image -> embed.image = value.inputValue().validUrlOrNull()
+				EmbedProperty.Thumbnail -> embed.thumbnail = value.inputValue().validUrlOrNull()
 
 				EmbedProperty.Footer -> {
 					val footer = EditableFooter(
 						text = footerText.inputValue(),
-						iconUrl = footerIcon.inputValue(),
+						iconUrl = footerIcon.inputValue().validUrlOrNull(),
 					)
 					embed.footer = footer.takeIf(EditableFooter::hasContent)
 				}
