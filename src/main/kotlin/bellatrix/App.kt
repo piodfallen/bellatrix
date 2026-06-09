@@ -13,11 +13,11 @@ import bellatrix.extensions.starboard.StarboardExtension
 import bellatrix.extensions.tasks.StaffTaskExtension
 import bellatrix.i18n.SupportedLocales
 import bellatrix.i18n.UserLocaleResolver
+import dev.kord.common.Locale
 import dev.kord.common.entity.PresenceStatus
 import dev.kordex.core.ExtensibleBot
 import dev.kordex.core.utils.env
 import java.io.File
-import dev.kord.common.Locale as DiscordLocale
 
 private val TOKEN = env("TOKEN")
 
@@ -32,7 +32,7 @@ suspend fun main() {
 
 		i18n {
 			defaultLocale = SupportedLocales.PORTUGUESE_BRAZIL
-			applicationCommandLocale(DiscordLocale.ENGLISH_UNITED_STATES)
+			applicationCommandLocale(Locale.ENGLISH_UNITED_STATES)
 			localeResolver { guild, _, user, _ ->
 				UserLocaleResolver.resolve(user, guild)
 			}
@@ -41,7 +41,7 @@ suspend fun main() {
 		presence {
 			status = PresenceStatus.DoNotDisturb
 
-			listening("\uD83C\uDF83 Abobrinhas")
+			listening("🎃 Abobrinhas")
 		}
 
 		extensions {

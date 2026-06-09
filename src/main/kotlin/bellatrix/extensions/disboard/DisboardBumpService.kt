@@ -127,15 +127,13 @@ class DisboardBumpService(
 	private fun Message.isSuccessfulDisboardBump(): Boolean {
 		val embeds = embeds.map { embed ->
 			DisboardBumpEmbed(
-				title = embed.title,
 				description = embed.description,
 			)
 		}
 
 		return DisboardBumpDetector.isSuccessfulBump(
 			disboardBotId = DiscordSettings.disboardBotId,
-			authorId = author?.id,
-			authorIsBot = author?.isBot,
+			authorId = data.author.id,
 			applicationId = applicationId,
 			embeds = embeds,
 		)
