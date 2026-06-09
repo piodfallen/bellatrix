@@ -14,11 +14,9 @@ class DisboardBumpDetectorTest {
 		val detected = DisboardBumpDetector.isSuccessfulBump(
 			disboardBotId = disboardBotId,
 			authorId = null,
-			authorIsBot = null,
 			applicationId = disboardBotId,
 			embeds = listOf(
 				DisboardBumpEmbed(
-					title = "DISBOARD: The Public Server List",
 					description = "Bump done! :thumbsup:\nCheck it out on DISBOARD.",
 				),
 			),
@@ -32,11 +30,9 @@ class DisboardBumpDetectorTest {
 		val detected = DisboardBumpDetector.isSuccessfulBump(
 			disboardBotId = disboardBotId,
 			authorId = disboardBotId,
-			authorIsBot = true,
 			applicationId = null,
 			embeds = listOf(
 				DisboardBumpEmbed(
-					title = null,
 					description = "Bump done! 👍",
 				),
 			),
@@ -46,21 +42,19 @@ class DisboardBumpDetectorTest {
 	}
 
 	@Test
-	fun `detects bump done text in embed title`() {
+	fun `ignores bump done text outside embed description`() {
 		val detected = DisboardBumpDetector.isSuccessfulBump(
 			disboardBotId = disboardBotId,
 			authorId = disboardBotId,
-			authorIsBot = true,
 			applicationId = null,
 			embeds = listOf(
 				DisboardBumpEmbed(
-					title = "Bump done!",
 					description = null,
 				),
 			),
 		)
 
-		assertTrue(detected)
+		assertFalse(detected)
 	}
 
 	@Test
@@ -68,11 +62,9 @@ class DisboardBumpDetectorTest {
 		val detected = DisboardBumpDetector.isSuccessfulBump(
 			disboardBotId = disboardBotId,
 			authorId = otherBotId,
-			authorIsBot = true,
 			applicationId = otherBotId,
 			embeds = listOf(
 				DisboardBumpEmbed(
-					title = null,
 					description = "Bump done!",
 				),
 			),
@@ -86,11 +78,9 @@ class DisboardBumpDetectorTest {
 		val detected = DisboardBumpDetector.isSuccessfulBump(
 			disboardBotId = disboardBotId,
 			authorId = disboardBotId,
-			authorIsBot = true,
 			applicationId = null,
 			embeds = listOf(
 				DisboardBumpEmbed(
-					title = "DISBOARD: The Public Server List",
 					description = "Please wait before bumping again.",
 				),
 			),
@@ -100,20 +90,18 @@ class DisboardBumpDetectorTest {
 	}
 
 	@Test
-	fun `ignores user messages with Disboard id shape`() {
+	fun `detects Disboard interaction response from raw author metadata`() {
 		val detected = DisboardBumpDetector.isSuccessfulBump(
 			disboardBotId = disboardBotId,
 			authorId = disboardBotId,
-			authorIsBot = false,
 			applicationId = null,
 			embeds = listOf(
 				DisboardBumpEmbed(
-					title = null,
 					description = "Bump done!",
 				),
 			),
 		)
 
-		assertFalse(detected)
+		assertTrue(detected)
 	}
 }

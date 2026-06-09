@@ -8,12 +8,11 @@ internal object DisboardBumpDetector {
 	fun isSuccessfulBump(
 		disboardBotId: Snowflake,
 		authorId: Snowflake?,
-		authorIsBot: Boolean?,
 		applicationId: Snowflake?,
 		embeds: List<DisboardBumpEmbed>,
 	): Boolean {
 		val fromDisboard = applicationId == disboardBotId ||
-			authorId == disboardBotId && authorIsBot == true
+			authorId == disboardBotId
 
 		if (!fromDisboard) return false
 
@@ -21,12 +20,9 @@ internal object DisboardBumpDetector {
 	}
 
 	private fun DisboardBumpEmbed.hasBumpDone(): Boolean =
-		listOfNotNull(title, description).any {
-			it.contains(BUMP_DONE_TEXT, ignoreCase = true)
-		}
+		description?.contains(BUMP_DONE_TEXT, ignoreCase = true) == true
 }
 
 internal data class DisboardBumpEmbed(
-	val title: String?,
 	val description: String?,
 )
