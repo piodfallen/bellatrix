@@ -1,4 +1,4 @@
-package bellatrix.extensions
+package bellatrix.extensions.disboard
 
 import bellatrix.common.discord.Channels
 import bellatrix.common.discord.DiscordSettings
@@ -14,14 +14,8 @@ import dev.kord.core.Kord
 import dev.kord.core.behavior.RoleBehavior
 import dev.kord.core.behavior.channel.MessageChannelBehavior
 import dev.kord.core.entity.Message
-import dev.kord.core.event.message.MessageCreateEvent
-import dev.kordex.core.extensions.Extension
-import dev.kordex.core.extensions.event
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -30,35 +24,25 @@ import java.time.Duration
 import java.time.Instant
 import kotlin.time.toKotlinDuration
 
-class DisboardBumpExtension : Extension() {
-	override val name = "disboard-bump"
-
-	private val repository = DisboardBumpReminderRepository
+class DisboardBumpService(
+	private val repository: DisboardBumpReminderRepository = DisboardBumpReminderRepository,
+) {
 	private val jobs = mutableMapOf<Snowflake, Job>()
 	private val jobsMutex = Mutex()
-	private val schedulerScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
-	override suspend fun setup() {
-		restorePendingReminders()
-
-		event<MessageCreateEvent> {
-			action {
-				handleMessage(event.message)
-			}
-		}
-	}
-
-	override suspend fun unload() {
-		schedulerScope.cancel()
-	}
-
-	private suspend fun restorePendingReminders() {
+	suspend fun restorePendingReminders(
+		kord: Kord,
+		scope: CoroutineScope,
+	) {
 		repository.findAll().forEach { reminder ->
-			scheduleReminder(reminder)
+			scheduleReminder(kord, scope, reminder)
 		}
 	}
 
-	private suspend fun handleMessage(message: Message) {
+	suspend fun handleMessage(
+		message: Message,
+		scope: CoroutineScope,
+	) {
 		val guildId = message.getGuildOrNull()?.id ?: return
 		if (!message.isSuccessfulDisboardBump()) return
 
@@ -74,22 +58,27 @@ class DisboardBumpExtension : Extension() {
 			nextReminderAt = now.plus(BUMP_COOLDOWN),
 		)
 
-		scheduleReminder(reminder)
+		scheduleReminder(message.kord, scope, reminder)
 		thankBumper(message, guildId)
 	}
 
-	private suspend fun scheduleReminder(reminder: DisboardBumpReminder) {
+	private suspend fun scheduleReminder(
+		kord: Kord,
+		scope: CoroutineScope,
+		reminder: DisboardBumpReminder,
+	) {
 		jobsMutex.withLock {
 			jobs.remove(reminder.guildId)?.cancel()
-			jobs[reminder.guildId] = schedulerScope.launch {
+			jobs[reminder.guildId] = scope.launch {
 				delayUntil(reminder.nextReminderAt)
-				sendReminder(kord, reminder)
+				sendReminder(kord, scope, reminder)
 			}
 		}
 	}
 
 	private suspend fun sendReminder(
 		kord: Kord,
+		scope: CoroutineScope,
 		reminder: DisboardBumpReminder,
 	) {
 		val current = repository.findByGuildId(reminder.guildId) ?: return
@@ -123,7 +112,7 @@ class DisboardBumpExtension : Extension() {
 				nextReminderAt = Instant.now().plus(RETRY_AFTER),
 			)
 
-			scheduleReminder(retry)
+			scheduleReminder(kord, scope, retry)
 		}
 	}
 
@@ -136,16 +125,21 @@ class DisboardBumpExtension : Extension() {
 	}
 
 	private fun Message.isSuccessfulDisboardBump(): Boolean {
-		if (!isFromDisboard()) return false
-
-		return embeds.any { embed ->
-			embed.description.orEmpty().contains(BUMP_DONE_TEXT, ignoreCase = true)
+		val embeds = embeds.map { embed ->
+			DisboardBumpEmbed(
+				title = embed.title,
+				description = embed.description,
+			)
 		}
-	}
 
-	private fun Message.isFromDisboard(): Boolean =
-		applicationId == DiscordSettings.disboardBotId ||
-			author?.takeIf { it.isBot }?.id == DiscordSettings.disboardBotId
+		return DisboardBumpDetector.isSuccessfulBump(
+			disboardBotId = DiscordSettings.disboardBotId,
+			authorId = author?.id,
+			authorIsBot = author?.isBot,
+			applicationId = applicationId,
+			embeds = embeds,
+		)
+	}
 
 	private suspend fun thankBumper(
 		message: Message,
@@ -167,7 +161,5 @@ class DisboardBumpExtension : Extension() {
 	private companion object {
 		val BUMP_COOLDOWN: Duration = Duration.ofHours(2)
 		val RETRY_AFTER: Duration = Duration.ofMinutes(30)
-
-		const val BUMP_DONE_TEXT = "Bump done!"
 	}
 }

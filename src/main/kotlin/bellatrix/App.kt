@@ -2,17 +2,18 @@ package bellatrix
 
 import bellatrix.database.DatabaseFactory
 import bellatrix.extensions.AutoroleExtension
-import bellatrix.extensions.DisboardBumpExtension
 import bellatrix.extensions.LanguageExtension
 import bellatrix.extensions.MousetrapExtension
 import bellatrix.extensions.PingExtension
 import bellatrix.extensions.WelcomeExtension
+import bellatrix.extensions.disboard.DisboardBumpExtension
 import bellatrix.extensions.embed.EmbedExtension
 import bellatrix.extensions.modmail.ModmailExtension
 import bellatrix.extensions.starboard.StarboardExtension
 import bellatrix.extensions.tasks.StaffTaskExtension
 import bellatrix.i18n.SupportedLocales
 import bellatrix.i18n.UserLocaleResolver
+import dev.kord.common.entity.PresenceStatus
 import dev.kordex.core.ExtensibleBot
 import dev.kordex.core.utils.env
 import java.io.File
@@ -35,6 +36,12 @@ suspend fun main() {
 			localeResolver { guild, _, user, _ ->
 				UserLocaleResolver.resolve(user, guild)
 			}
+		}
+
+		presence {
+			status = PresenceStatus.DoNotDisturb
+
+			listening("\uD83C\uDF83 Abobrinhas")
 		}
 
 		extensions {

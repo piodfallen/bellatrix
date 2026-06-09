@@ -35,6 +35,8 @@ dependencies {
 	implementation(libs.flyway.database.postgresql)
 	implementation(libs.postgresql)
 
+	testImplementation(libs.kotlin.test)
+
 	// Logging dependencies
 	implementation(libs.groovy)
 	implementation(libs.jansi)
