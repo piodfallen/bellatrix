@@ -75,6 +75,7 @@ class DisboardBumpExtension : Extension() {
 		)
 
 		scheduleReminder(reminder)
+		thankBumper(message, guildId)
 	}
 
 	private suspend fun scheduleReminder(reminder: DisboardBumpReminder) {
@@ -135,12 +136,32 @@ class DisboardBumpExtension : Extension() {
 	}
 
 	private fun Message.isSuccessfulDisboardBump(): Boolean {
-		if (author?.id != DiscordSettings.disboardBotId) return false
-		if (author?.isBot != true) return false
+		if (!isFromDisboard()) return false
 
 		return embeds.any { embed ->
 			embed.description.orEmpty().contains(BUMP_DONE_TEXT, ignoreCase = true)
 		}
+	}
+
+	private fun Message.isFromDisboard(): Boolean =
+		applicationId == DiscordSettings.disboardBotId ||
+			author?.takeIf { it.isBot }?.id == DiscordSettings.disboardBotId
+
+	private suspend fun thankBumper(
+		message: Message,
+		guildId: Snowflake,
+	) {
+		val bumperMention = message.interaction?.user?.mention ?: return
+		val locale = GuildLocaleResolver.resolve(message.kord.getGuildOrNull(guildId))
+
+		MessageChannelBehavior(message.channelId, message.kord).createMessage(
+			Emojis.check.prefix(
+				Translations.Disboard.BumpReminder.thanks
+					.withNamedPlaceholders("user" to bumperMention)
+					.withLocale(locale)
+					.translate(),
+			),
+		)
 	}
 
 	private companion object {
