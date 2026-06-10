@@ -5,36 +5,45 @@ import bellatrix.i18n.GuildLocaleResolver
 import bellatrix.i18n.Translations
 import dev.kord.core.behavior.channel.MessageChannelBehavior
 import dev.kord.core.behavior.channel.createMessage
-import dev.kord.core.event.guild.MemberJoinEvent
+import dev.kord.core.entity.Guild
+import dev.kord.core.entity.Member
+import dev.kord.core.event.guild.MemberUpdateEvent
 import dev.kordex.core.extensions.Extension
 import dev.kordex.core.extensions.event
 
 class WelcomeExtension : Extension() {
 	override val name = "welcome"
 
-	override suspend fun setup() {
+	private suspend fun sendWelcome(member: Member, guild: Guild) {
 		val channelId = Channels.welcome ?: return
 
-		event<MemberJoinEvent> {
+		val channel = guild.getChannelOrNull(channelId) as? MessageChannelBehavior ?: return
+		val locale = GuildLocaleResolver.resolve(guild)
+
+		val response = Translations.Events.Welcome.message
+			.withLocale(locale)
+			.translateNamed(
+				"member" to member.mention,
+				"server" to guild.name,
+			)
+
+		channel.createMessage {
+			content = response
+		}
+	}
+
+	override suspend fun setup() {
+		event<MemberUpdateEvent> {
 			action {
 				val member = event.member
-
 				if (member.isBot) return@action
 
+				val old = event.old
+				val completedOnboarding = old?.isPending == true && !member.isPending
+				if (!completedOnboarding) return@action
+
 				val guild = event.getGuildOrNull() ?: return@action
-				val channel = guild.getChannelOrNull(channelId) as? MessageChannelBehavior ?: return@action
-				val locale = GuildLocaleResolver.resolve(guild)
-
-				val response = Translations.Events.Welcome.message
-					.withLocale(locale)
-					.translateNamed(
-						"member" to member.mention,
-						"server" to guild.name,
-					)
-
-				channel.createMessage {
-					content = response
-				}
+				sendWelcome(member, guild)
 			}
 		}
 	}
